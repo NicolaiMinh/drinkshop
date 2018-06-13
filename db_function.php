@@ -1,7 +1,7 @@
 <?php
 
 /**
-* 
+*
 */
 class DB_Functions
 {
@@ -46,7 +46,7 @@ return false and show error message if have exception
 		$result = $stmt->execute();
 		if($result)
 		{
-			$stmt = $this->conn->prepare("SELECT * FROM User WHERE Phone = ?");	
+			$stmt = $this->conn->prepare("SELECT * FROM User WHERE Phone = ?");
 			$stmt->bind_param("s",$phone);
 			$stmt->execute();
 			$user = $stmt->get_result()->fetch_assoc();
@@ -58,14 +58,14 @@ return false and show error message if have exception
 			return false;
 		}
 	}
-	
+
 /*
 get user information by phone
 return user object if user existed
 return NULL if user not exist
 */
 	public function getUserInformation($phone){
-		$stmt = $this->conn->prepare("SELECT * FROM User WHERE Phone = ?");	
+		$stmt = $this->conn->prepare("SELECT * FROM User WHERE Phone = ?");
 		$stmt->bind_param("s",$phone);
 
 		if($stmt->execute())
@@ -79,7 +79,7 @@ return NULL if user not exist
 			return NULL;
 		}
 
-		
+
 	}
 
 	/*
@@ -91,9 +91,34 @@ return NULL if user not exist
 		//get 3 item
 		$result = $this->conn->query("SELECT * FROM banner ORDER BY ID LIMIT 3");
 		$banners = array();
-		while ($item = $result->fetch_assoc()) 
+		while ($item = $result->fetch_assoc())
 			$banners[] = $item;
 		return $banners;
+	}
+
+	/*
+	get list menu
+	return list of menu object
+	*/
+	public function getMenus(){
+		$result = $this->conn->query("SELECT * FROM menu");
+		$menus = array();
+		while ($item = $result->fetch_assoc())
+			$menus[] = $item;
+		return $menus;
+	}
+
+	/*
+	get drink menu by menuID
+	return list of drink object
+	*/
+	public function getDrinkByMenuID($menuId){
+		$query = "SELECT * FROM drink WHERE MenuId = '".$menuId."'";
+		$result = $this->conn->query($query);
+		$drinks = array();
+		while ($item = $result->fetch_assoc())
+			$drinks[] = $item;
+		return $drinks;
 	}
 
 }
