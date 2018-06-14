@@ -19,6 +19,7 @@ result: json
 			$response["name"] = $user["Name"];
 			$response["birthday"] = $user["Birthday"];
 			$response["address"] = $user["Address"];
+			$response["avatarUrl"] = $user["AvatarUrl"];
 			echo json_encode($response);
 		}
 		else

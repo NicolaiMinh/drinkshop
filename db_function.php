@@ -121,6 +121,14 @@ return NULL if user not exist
 		return $drinks;
 	}
 
+	/*
+	update avatarUrl
+	return list of drink object
+	*/
+	public function updateAvatar($phone, $filename){
+		return $result = $this->conn->query("UPDATE user SET AvatarUrl ='$filename' WHERE Phone = '$phone'");
+	}
+
 }
 
 ?>
