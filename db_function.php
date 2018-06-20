@@ -129,6 +129,41 @@ return NULL if user not exist
 		return $result = $this->conn->query("UPDATE user SET AvatarUrl ='$filename' WHERE Phone = '$phone'");
 	}
 
+	/*
+	get all drink table for search
+	return list of drink object
+	*/
+	public function getAllDrinks(){
+		$result = $this->conn->query("SELECT * FROM drink WHERE 1") or die($this->conn->error);
+		$drinks = array();
+		while ($item = $result->fetch_assoc())
+			$drinks[] = $item;
+		return $drinks;
+	}
+
+	/*
+	insert data to order table
+	return true or false
+	*/
+	public function insertNewOrder($orderPrice, $orderComment, $orderAddress, $orderDetail, $userPhone){
+		$stmt = $this->conn->prepare("INSERT INTO `order`(`orderStatus`, `orderPrice`, `orderDetail`,
+			`orderComment`, `orderAddress`, `userPhone`)
+			VALUES (0,?,?,?,?,?)");
+		$stmt->bind_param("sssss",$orderPrice, $orderDetail, $orderComment, $orderAddress, $userPhone);
+		$result = $stmt->execute();
+		$stmt->close();
+
+		if($result)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+
 }
 
 ?>
