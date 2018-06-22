@@ -162,7 +162,69 @@ return NULL if user not exist
 			return false;
 		}
 	}
+	
+	/*
+	insert new menu(category)
+	return true or false
+	*/
+	public function insertNewCategory($name, $imgPath){
+		$stmt = $this->conn->prepare("INSERT INTO `menu`(`Name`, `Link`) VALUES (?,?)");
+		$stmt->bind_param("ss",$name, $imgPath);
+		$result = $stmt->execute();
+		$stmt->close();
 
+		if($result)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	/*
+	update menu(category)
+	return true or false
+	*/
+	public function updateCategory($id, $name, $imgPath){
+		$stmt = $this->conn->prepare("UPDATE `menu` SET `Name`=?,`Link`=? WHERE `ID`= ?");
+		$stmt->bind_param("sss",$name, $imgPath, $id);
+		$result = $stmt->execute();
+		$stmt->close();
+		return $result;
+	}
+	
+	/*
+	update menu(category)
+	return true or false
+	*/
+	public function deleteCategory($id){
+		$stmt = $this->conn->prepare("DELETE FROM `menu` WHERE `ID`= ?");
+		$stmt->bind_param("s", $id);
+		$result = $stmt->execute();
+		return $result;
+	}
+
+	/*
+	insert new menu(category)
+	return true or false
+	*/
+	public function insertNewDrink($name, $imgPath, $price, $menuId){
+		$stmt = $this->conn->prepare("INSERT INTO `drink`(`Name`, `Link`, `Price`, `MenuId`) VALUES (?,?,?,?)");
+		$stmt->bind_param("ssss",$name, $imgPath, $price, $menuId);
+		$result = $stmt->execute();
+		$stmt->close();
+
+		if($result)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 }
 
