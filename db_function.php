@@ -146,9 +146,9 @@ return NULL if user not exist
 	return true or false
 	*/
 	public function insertNewOrder($orderPrice, $orderComment, $orderAddress, $orderDetail, $userPhone){
-		$stmt = $this->conn->prepare("INSERT INTO `order`(`orderStatus`, `orderPrice`, `orderDetail`,
+		$stmt = $this->conn->prepare("INSERT INTO `order`(`orderDate`, `orderStatus`, `orderPrice`, `orderDetail`,
 			`orderComment`, `orderAddress`, `userPhone`)
-			VALUES (0,?,?,?,?,?)");
+			VALUES (NOW(),0,?,?,?,?,?)");
 		$stmt->bind_param("sssss",$orderPrice, $orderDetail, $orderComment, $orderAddress, $userPhone);
 		$result = $stmt->execute();
 		$stmt->close();
@@ -225,7 +225,58 @@ return NULL if user not exist
 			return false;
 		}
 	}
-
+	
+	/*
+	update drink(product)
+	return true or false
+	*/
+	public function updateProduct($id, $name, $imgPath, $price, $menuId){
+		$stmt = $this->conn->prepare("UPDATE `drink` SET `Name`=?,`Link`=?, `Price`=?, `MenuId`=? WHERE `ID`= ?");
+		$stmt->bind_param("sssss",$name, $imgPath,$price,$menuId, $id);
+		$result = $stmt->execute();
+		$stmt->close();
+		return $result;
+	}
+	
+	/*
+	delete product(drink)
+	return true or false
+	*/
+	public function deleteProduct($id){
+		$stmt = $this->conn->prepare("DELETE FROM `drink` WHERE `ID`= ?");
+		$stmt->bind_param("s", $id);
+		$result = $stmt->execute();
+		return $result;
+	}
+	
+	/*
+	get all orders by userphone and status
+	return list or null
+	*/
+	public function getOrderByStatus($userPhone, $status){
+		$query = "SELECT * FROM `order` WHERE `orderStatus` = '" . $status . "' AND `userPhone` = '" . $userPhone . "'";
+		$result = $this->conn->query($query) or die($this->conn->error);
+		
+		$orders = array();
+		while ($order = $result->fetch_assoc())
+			$orders[] = $order;
+		return $orders;
+	}
+	
+	/*
+	get all orders by status for server
+	return list or null
+	*/
+	public function getOrderServerByStatus($status){
+		$query = "SELECT * FROM `order` WHERE `orderStatus` = '" . $status . "'";
+		$result = $this->conn->query($query) or die($this->conn->error);
+		
+		$orders = array();
+		while ($order = $result->fetch_assoc())
+			$orders[] = $order;
+		return $orders;
+	}
+	
 }
 
 ?>
