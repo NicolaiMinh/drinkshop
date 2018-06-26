@@ -162,7 +162,7 @@ return NULL if user not exist
 			return false;
 		}
 	}
-	
+
 	/*
 	insert new menu(category)
 	return true or false
@@ -182,7 +182,7 @@ return NULL if user not exist
 			return false;
 		}
 	}
-	
+
 	/*
 	update menu(category)
 	return true or false
@@ -194,7 +194,7 @@ return NULL if user not exist
 		$stmt->close();
 		return $result;
 	}
-	
+
 	/*
 	update menu(category)
 	return true or false
@@ -225,7 +225,7 @@ return NULL if user not exist
 			return false;
 		}
 	}
-	
+
 	/*
 	update drink(product)
 	return true or false
@@ -237,7 +237,7 @@ return NULL if user not exist
 		$stmt->close();
 		return $result;
 	}
-	
+
 	/*
 	delete product(drink)
 	return true or false
@@ -248,7 +248,7 @@ return NULL if user not exist
 		$result = $stmt->execute();
 		return $result;
 	}
-	
+
 	/*
 	get all orders by userphone and status
 	return list or null
@@ -256,13 +256,13 @@ return NULL if user not exist
 	public function getOrderByStatus($userPhone, $status){
 		$query = "SELECT * FROM `order` WHERE `orderStatus` = '" . $status . "' AND `userPhone` = '" . $userPhone . "'";
 		$result = $this->conn->query($query) or die($this->conn->error);
-		
+
 		$orders = array();
 		while ($order = $result->fetch_assoc())
 			$orders[] = $order;
 		return $orders;
 	}
-	
+
 	/*
 	get all orders by status for server
 	return list or null
@@ -270,13 +270,41 @@ return NULL if user not exist
 	public function getOrderServerByStatus($status){
 		$query = "SELECT * FROM `order` WHERE `orderStatus` = '" . $status . "'";
 		$result = $this->conn->query($query) or die($this->conn->error);
-		
+
 		$orders = array();
 		while ($order = $result->fetch_assoc())
 			$orders[] = $order;
 		return $orders;
 	}
-	
+
+	/*
+	insert or update token
+	return token object or false
+	*/
+	public function insertToken($phone, $token, $isServerToken){
+		$stmt = $this->conn->prepare("INSERT INTO `token`(`phone`, `token`, `isServerToken`) VALUES (?,?,?)
+																	ON DUPLICATE KEY UPDATE `token` = ?, `isServerToken` = ?")
+																	OR DIE ($this->conn->error);
+		$stmt->bind_param("sssss", $phone, $token, $isServerToken, $token, $isServerToken);
+		$result = $stmt->execute();
+		$stmt->close();
+		//check for successful store_result
+		if($result)
+		{
+				$stmt = $this->conn->prepare("SELECT * FROM `token` WHERE `phone` = ?");
+				$stmt->bind_param("s", $phone);
+				$stmt->execute();
+				$user = $stmt->get_result()->fetch_assoc();
+				$stmt->close();
+				return $user;
+		}
+		else
+		{
+				return false;
+		}
+
+	}
+
 }
 
 ?>
